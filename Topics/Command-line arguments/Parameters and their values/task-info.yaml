@@ -1,0 +1,19 @@
+type: code
+files:
+  - name: src/Main.java
+    visible: true
+    highlight_level: NONE
+    text: |-
+      class Problem {
+          public static void main(String[] args) {
+      
+          }
+      }
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/3336#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Fri, 05 Apr 2024 13:35:22 UTC"
+record: -1
+submission_language: java17
