@@ -23,6 +23,11 @@ public class Person {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", firstName, lastName, email);
+        return String.format(
+                "%s %s %s",
+                firstName == null ? "" : firstName,
+                lastName == null ? "" : lastName,
+                email == null ? "" : email
+                ).trim();
     }
 }
