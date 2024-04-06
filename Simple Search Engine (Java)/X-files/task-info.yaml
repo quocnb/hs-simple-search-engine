@@ -1,16 +1,5 @@
 type: edu
 files:
-  - name: src/search/Main.java
-    visible: true
-    text: |
-      package search;
-      
-      public class Main {
-          public static void main(String[] args) {
-              System.out.println("Hello World!");
-          }
-      }
-    learner_created: false
   - name: test/SearchEngineTests.java
     visible: false
     text: |
@@ -285,6 +274,68 @@ files:
       }
     
     learner_created: false
+  - name: src/search/StringUtils.java
+    visible: true
+    text: |
+      package search;
+      
+      import java.util.Arrays;
+      import java.util.concurrent.atomic.AtomicInteger;
+      
+      public class StringUtils {
+          public static int find(String searchWord, String sentence) {
+              AtomicInteger position = new AtomicInteger(-1);
+              var foundString = Arrays.stream(sentence.split(" "))
+                      .peek(s -> position.addAndGet(1))
+                      .filter(s -> s.equals(searchWord))
+                      .findFirst();
+              if (foundString.isPresent()) {
+                  return position.get();
+              }
+              return -1;
+          }
+      }
+    learner_created: true
+  - name: src/search/Person.java
+    visible: true
+    text: |
+      package search;
+      
+      public class Person {
+          private String firstName;
+          private String lastName;
+          private String email;
+      
+          public Person(String input) {
+              String[] arr = input.split(" ");
+              if (arr.length > 0) {
+                  firstName = arr[0];
+              }
+              if (arr.length > 1) {
+                  lastName = arr[1];
+              }
+              if (arr.length > 2) {
+                  email = arr[2];
+              }
+          }
+          public boolean contains(String text) {
+              return this.toString().toLowerCase().contains(text.toLowerCase());
+          }
+      
+          @Override
+          public String toString() {
+              return String.format(
+                      "%s %s %s",
+                      firstName == null ? "" : firstName,
+                      lastName == null ? "" : lastName,
+                      email == null ? "" : email
+                      ).trim();
+          }
+      }
+    learner_created: true
 feedback_link: https://hyperskill.org/projects/66/stages/357/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Sat, 06 Apr 2024 13:35:14 UTC"
 record: -1

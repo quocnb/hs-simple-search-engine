@@ -1,5 +1,6 @@
 package search;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,14 +9,9 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the number of people:");
-        int numberOfPeople = Integer.parseInt(scanner.nextLine());
-        System.out.println("Enter all people:");
-        ArrayList<Person> people = new ArrayList<>();
-        while (numberOfPeople > 0) {
-            people.add(new Person(scanner.nextLine()));
-            numberOfPeople -= 1;
-        }
+        String filePath = getFilePathFromArguments(args);
+        List<Person> people = readDataFromFile(filePath);
+
         int menu = 0;
         do {
             System.out.println();
@@ -52,6 +48,33 @@ public class Main {
             }
         } while (menu != 0);
         System.out.println("Bye!");
+    }
+
+    static String getFilePathFromArguments(String[] args) {
+        boolean readFilePath = false;
+        for (String arg : args) {
+            if (readFilePath) {
+                return arg;
+            }
+            if ("--data".equals(arg)) {
+                readFilePath = true;
+            }
+        }
+        return "";
+    }
+
+    static List<Person> readDataFromFile(String filePath) {
+        ArrayList<Person> people = new ArrayList<>();
+        try {
+            Scanner scanner = new Scanner(new File(filePath));
+            while (scanner.hasNextLine()) {
+                people.add(new Person(scanner.nextLine()));
+            }
+            scanner.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return people;
     }
 
     static void printPeople(List<Person> people) {
