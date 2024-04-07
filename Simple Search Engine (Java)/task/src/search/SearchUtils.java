@@ -2,10 +2,15 @@ package search;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class SearchUtils {
+    public enum SearchMode {
+        ALL, ANY, NONE
+    }
     final private List<String> data;
-    final private Map<String, List<Integer>> dataMap;
+    final private Map<String, Set<Integer>> dataMap;
 
     public SearchUtils(String filePath) {
         data = new ArrayList<>();
@@ -17,12 +22,12 @@ public class SearchUtils {
                 String line = scanner.nextLine();
                 data.add(line);
                 for (String key: line.split(" ")) {
-                    List<Integer> indexList = dataMap.get(key);
+                    Set<Integer> indexList = dataMap.get(key.toLowerCase());
                     if (indexList == null) {
-                        indexList = new ArrayList<>();
+                        indexList = new HashSet<>();
                     }
                     indexList.add(index);
-                    dataMap.put(key, indexList);
+                    dataMap.put(key.toLowerCase(), indexList);
                 }
                 index += 1;
             }
@@ -32,18 +37,64 @@ public class SearchUtils {
         }
     }
 
-    public List<String> search(String keyword) {
-        List<String> result = new ArrayList<>();
-        List<Integer> indexList = dataMap.get(keyword);
-        if (indexList != null) {
-            for (Integer index : indexList) {
-                result.add(data.get(index));
+    public List<String> search(String[] keywords, SearchMode mode) {
+        return switch (mode) {
+            case ALL -> {
+                Set<Integer> indexList = searchAll(keywords);
+                yield IntStream.range(0, data.size())
+                        .filter(indexList::contains)
+                        .mapToObj(data::get)
+                        .collect(Collectors.toList());
             }
-        }
-        return result;
+            case ANY -> {
+                Set<Integer> indexList = searchAny(keywords);
+                yield IntStream.range(0, data.size())
+                        .filter(indexList::contains)
+                        .mapToObj(data::get)
+                        .collect(Collectors.toList());
+            }
+            case NONE -> {
+                Set<Integer> indexList = searchAny(keywords);
+                yield IntStream.range(0, data.size())
+                        .filter(i -> !indexList.contains(i))
+                        .mapToObj(data::get)
+                        .collect(Collectors.toList());
+            }
+        };
     }
 
     public List<String> getAllData() {
         return this.data;
+    }
+
+    private Set<Integer> searchAll(String[] keywords) {
+        Set<Integer> indexList = new HashSet<>();
+        for (String keyword : keywords) {
+            Set<Integer> indexes = dataMap.get(keyword.toLowerCase());
+            if (indexes == null) {
+                return new HashSet<>();
+            }
+            if (indexList.isEmpty()) {
+                indexList = indexes;
+            } else {
+                boolean hasSame = indexList.retainAll(indexes);
+                if (!hasSame) {
+                    return new HashSet<>();
+                }
+            }
+        }
+        return indexList;
+    }
+
+    private Set<Integer> searchAny(String[] keywords) {
+        Set<Integer> indexList = new HashSet<>();
+        for (String keyword : keywords) {
+            Set<Integer> indexes = dataMap.get(keyword.toLowerCase());
+            if (indexes == null) {
+                continue;
+            }
+            indexList.addAll(indexes);
+        }
+        return indexList;
     }
 }
