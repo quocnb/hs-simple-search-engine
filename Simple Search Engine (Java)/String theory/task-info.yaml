@@ -100,7 +100,7 @@ files:
   - name: src/search/StringUtils.java
     visible: true
     learner_created: true
-feedback_link: https://hyperskill.org/projects/66/stages/354/implement#comment
+feedback_link: https://hyperskill.org/learn/step/5496#comment
 status: Solved
 feedback:
   message: Congratulations!

@@ -3,6 +3,7 @@ package search;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,8 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String filePath = getFilePathFromArguments(args);
-        List<Person> people = readDataFromFile(filePath);
+        SearchUtils searchUtils = new SearchUtils(filePath);
+//        List<Person> people = readDataFromFile(filePath);
 
         int menu = 0;
         do {
@@ -28,17 +30,21 @@ public class Main {
                 case 1: {
                     System.out.println("Enter a name or email to search all suitable people.");
                     String searchKeyword = scanner.nextLine();
-                    List<Person> searchResult = searchPerson(people, searchKeyword);
+//                    List<Person> searchResult = searchPerson(people, searchKeyword);
+                    List<String> searchResult = searchUtils.search(searchKeyword);
                     if (searchResult.isEmpty()) {
-                        System.out.println("not found");
+                        System.out.println("No matching people found.");
                     } else {
-                        printPeople(searchResult);
+                        System.out.printf("%d persons found:\n", searchResult.size());
+                        System.out.println(String.join("\n", searchResult));
+//                        printPeople(searchResult);
                     }
                 }
                 break;
                 case 2: {
                     System.out.println("=== List of people ===");
-                    printPeople(people);
+//                    printPeople(people);
+                    System.out.println(String.join("\n", searchUtils.getAllData()));
                 }
                 break;
                 default: {
